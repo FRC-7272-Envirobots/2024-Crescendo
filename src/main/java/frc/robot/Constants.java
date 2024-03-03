@@ -34,7 +34,7 @@ public final class Constants {
   public static class LightstripConstants {
     // Must be a PWM header, not MXP or DIO
     public static final int pwmPortID = 9;
-    public static final int length = 100;
+    public static final int length = 300;
   }
 
   public static class LauncherConstants {

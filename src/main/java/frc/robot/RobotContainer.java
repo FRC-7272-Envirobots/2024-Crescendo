@@ -22,6 +22,9 @@ import frc.robot.subsystems.CANDrivetrain;
 import frc.robot.subsystems.CANLauncher;
 import frc.robot.subsystems.Lightstrip;
 import edu.wpi.first.networktables.NetworkTableInstance;
+
+import java.awt.Color;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.StringTopic;
@@ -80,21 +83,6 @@ public class RobotContainer {
     //                 -m_driverController.getLeftY(), -m_driverController.getRightX()),
     //         m_drivetrain));
 
-<<<<<<< Updated upstream
-    /*Create an inline sequence to run when the operator presses and holds the A (green) button. Run the PrepareLaunch
-     * command for 1 seconds and then run the LaunchNote command */
-    m_driverController
-        .a()
-        .whileTrue(
-            new PrepareLaunch(m_launcher)
-                .withTimeout(LauncherConstants.kLauncherDelay)
-                .andThen(new LaunchNote(m_launcher))
-                .handleInterrupt(() -> m_launcher.stop()));
-
-    // Set up a binding to run the intake command while the operator is pressing and holding the
-    // left Bumper
-    m_driverController.b().whileTrue(new IntakeNote(m_launcher));
-=======
     // /*Create an inline sequence to run when the operator presses and holds the A (green) button. Run the PrepareLaunch
     //  * command for 1 seconds and then run the LaunchNote command */
     // m_operatorController
@@ -108,7 +96,6 @@ public class RobotContainer {
     // // Set up a binding to run the intake command while the operator is pressing and holding the
     // // left Bumper
     // m_operatorController.leftBumper().whileTrue(m_launcher.getIntakeCommand());
->>>>>>> Stashed changes
   }
 
   /**
