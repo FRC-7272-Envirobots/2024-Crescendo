@@ -8,11 +8,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.LauncherConstants;
+import frc.robot.Constants.LightstripConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 //import frc.robot.commands.GyroPath;
 import frc.robot.commands.IntakeNote;
 import frc.robot.commands.LaunchNote;
+import frc.robot.commands.LightstripEnvirobots;
 import frc.robot.commands.PrepareLaunch;
 import frc.robot.commands.TurnLeft180;
 import frc.robot.commands.TurnLeft90;
@@ -22,7 +24,15 @@ import frc.robot.commands.TurnRight90;
 //import frc.robot.commands.TurnWithGyroPID;
 import frc.robot.subsystems.CANDrivetrain;
 import frc.robot.subsystems.CANLauncher;
+import frc.robot.subsystems.Lightstrip;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
+import java.awt.Color;
+
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.StringTopic;
+import edu.wpi.first.networktables.StringPublisher;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -31,10 +41,9 @@ import frc.robot.subsystems.CANLauncher;
  */
 public class RobotContainer {
   // The robot's subsystems are defined here.
-  // private final PWMDrivetrain m_drivetrain = new PWMDrivetrain();
   final CANDrivetrain m_drivetrain = new CANDrivetrain();
-  // private final PWMLauncher m_launcher = new PWMLauncher();
   private final CANLauncher m_launcher = new CANLauncher();
+  private final Lightstrip m_lightstrip = new Lightstrip(LightstripConstants.length);
 
   /*The gamepad provided in the KOP shows up like an XBox controller if the mode switch is set to X mode using the
    * switch on the top.*/
@@ -47,7 +56,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-  }
+  } 
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be accessed via the
@@ -55,6 +64,9 @@ public class RobotContainer {
    * below) or via the Trigger constructor for arbitary conditions
    */
   private void configureBindings() {
+    m_lightstrip.setColor(Color.GREEN);
+    m_lightstrip.setDefaultCommand(new LightstripEnvirobots(m_lightstrip));
+
     // Set the default command for the drivetrain to drive using the joysticks
     m_drivetrain.setDefaultCommand(
         new RunCommand(
@@ -63,8 +75,8 @@ public class RobotContainer {
                     -m_driverController.getLeftY() *.7, -m_driverController.getRightX()*.7),
             m_drivetrain));
 
-    /*Create an inline sequence to run when the operator presses and holds the A (green) button. Run the PrepareLaunch
-     * command for 1 seconds and then run the LaunchNote command */
+    // /*Create an inline sequence to run when the operator presses and holds the A (green) button. Run the PrepareLaunch
+    //  * command for 1 seconds and then run the LaunchNote command */
     m_driverController
         .a()
         .whileTrue(
