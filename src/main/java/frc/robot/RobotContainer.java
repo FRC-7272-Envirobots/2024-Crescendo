@@ -11,13 +11,17 @@ import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.LightstripConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
+//import frc.robot.commands.GyroPath;
 import frc.robot.commands.IntakeNote;
 import frc.robot.commands.LaunchNote;
 import frc.robot.commands.LightstripEnvirobots;
 import frc.robot.commands.PrepareLaunch;
-// import frc.robot.subsystems.PWMDrivetrain;
-// import frc.robot.subsystems.PWMLauncher;
-
+import frc.robot.commands.TurnLeft180;
+import frc.robot.commands.TurnLeft90;
+import frc.robot.commands.TurnRight180;
+import frc.robot.commands.TurnRight90;
+//import frc.robot.commands.TurnWithGyro;
+//import frc.robot.commands.TurnWithGyroPID;
 import frc.robot.subsystems.CANDrivetrain;
 import frc.robot.subsystems.CANLauncher;
 import frc.robot.subsystems.Lightstrip;
@@ -37,10 +41,8 @@ import edu.wpi.first.networktables.StringPublisher;
  */
 public class RobotContainer {
   // The robot's subsystems are defined here.
-  // private final PWMDrivetrain m_drivetrain = new PWMDrivetrain();
-  //private final CANDrivetrain m_drivetrain = new CANDrivetrain();
-  // private final PWMLauncher m_launcher = new PWMLauncher();
-  //private final CANLauncher m_launcher = new CANLauncher();
+  final CANDrivetrain m_drivetrain = new CANDrivetrain();
+  private final CANLauncher m_launcher = new CANLauncher();
   private final Lightstrip m_lightstrip = new Lightstrip(LightstripConstants.length);
 
   /*The gamepad provided in the KOP shows up like an XBox controller if the mode switch is set to X mode using the
@@ -76,26 +78,39 @@ public class RobotContainer {
     m_lightstrip.setDefaultCommand(new LightstripEnvirobots(m_lightstrip));
 
     // Set the default command for the drivetrain to drive using the joysticks
-    // m_drivetrain.setDefaultCommand(
-    //     new RunCommand(
-    //         () ->
-    //             m_drivetrain.arcadeDrive(
-    //                 -m_driverController.getLeftY(), -m_driverController.getRightX()),
-    //         m_drivetrain));
+    m_drivetrain.setDefaultCommand(
+        new RunCommand(
+            () ->
+                m_drivetrain.arcadeDrive(
+                    -m_driverController.getLeftY() *.7, -m_driverController.getRightX()*.7),
+            m_drivetrain));
 
     // /*Create an inline sequence to run when the operator presses and holds the A (green) button. Run the PrepareLaunch
     //  * command for 1 seconds and then run the LaunchNote command */
-    // m_operatorController
-    //     .a()
-    //     .whileTrue(
-    //         new PrepareLaunch(m_launcher)
-    //             .withTimeout(LauncherConstants.kLauncherDelay)
-    //             .andThen(new LaunchNote(m_launcher))
-    //             .handleInterrupt(() -> m_launcher.stop()));
+    m_operatorController
+        .a()
+        .whileTrue(
+            new PrepareLaunch(m_launcher)
+                .withTimeout(LauncherConstants.kLauncherDelay)
+                .andThen(new LaunchNote(m_launcher))
+                .handleInterrupt(() -> m_launcher.stop()));
 
     // // Set up a binding to run the intake command while the operator is pressing and holding the
     // // left Bumper
-    // m_operatorController.leftBumper().whileTrue(m_launcher.getIntakeCommand());
+    m_operatorController.leftBumper().whileTrue(m_launcher.getIntakeCommand());
+    // Set up a binding to run the intake command while the operator is pressing and holding the
+    // b button
+    m_driverController.b().whileTrue(new IntakeNote(m_launcher));
+
+    //m_driverController.y().whileTrue(new GyroPath(m_drivetrain));
+
+    m_driverController.povRight().whileTrue(new TurnRight90(m_drivetrain));
+
+    m_driverController.povLeft().whileTrue(new TurnLeft90(m_drivetrain));
+
+    m_driverController.povUp().whileTrue(new TurnRight180(m_drivetrain));
+
+    m_driverController.povDown().whileTrue(new TurnLeft180(m_drivetrain));
   }
 
   /**
