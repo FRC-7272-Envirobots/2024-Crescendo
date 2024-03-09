@@ -85,9 +85,6 @@ public class RobotContainer {
                 .andThen(new LaunchNote(m_launcher))
                 .handleInterrupt(() -> m_launcher.stop()));
 
-    // // Set up a binding to run the intake command while the operator is pressing and holding the
-    // // left Bumper
-    m_driverController.a().whileTrue(m_launcher.getIntakeCommand());
     // Set up a binding to run the intake command while the operator is pressing and holding the
     // b button
     m_driverController.b().whileTrue(new IntakeNote(m_launcher));
@@ -110,6 +107,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return null; //Autos.exampleAuto(m_drivetrain);
+    return Autos.exampleAuto(m_drivetrain);
   }
 }
