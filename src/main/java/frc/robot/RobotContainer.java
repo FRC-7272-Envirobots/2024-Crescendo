@@ -52,20 +52,10 @@ public class RobotContainer {
   // private final CommandXboxController m_operatorController =
   //     new CommandXboxController(OperatorConstants.kOperatorControllerPort);
 
-  NetworkTableInstance nt = NetworkTableInstance.getDefault();
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-    NetworkTable table = nt.getTable("ViamLightStrip");
-    //table.putString("pattern", "rainbow");
-    StringTopic topic = table.getStringTopic("animation");
-    StringPublisher publisher = topic.publish();
-    publisher.set("rainbow");
-    System.out.println("set rainbow");
-
-    CameraServer.startAutomaticCapture();
   } 
 
   /**
@@ -87,7 +77,7 @@ public class RobotContainer {
 
     // /*Create an inline sequence to run when the operator presses and holds the A (green) button. Run the PrepareLaunch
     //  * command for 1 seconds and then run the LaunchNote command */
-    m_operatorController
+    m_driverController
         .a()
         .whileTrue(
             new PrepareLaunch(m_launcher)
@@ -97,7 +87,7 @@ public class RobotContainer {
 
     // // Set up a binding to run the intake command while the operator is pressing and holding the
     // // left Bumper
-    m_operatorController.leftBumper().whileTrue(m_launcher.getIntakeCommand());
+    m_driverController.a().whileTrue(m_launcher.getIntakeCommand());
     // Set up a binding to run the intake command while the operator is pressing and holding the
     // b button
     m_driverController.b().whileTrue(new IntakeNote(m_launcher));
