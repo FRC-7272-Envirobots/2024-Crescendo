@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -15,10 +16,15 @@ import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
+import com.revrobotics.ColorMatch;
+import com.revrobotics.ColorMatchResult;
+import com.revrobotics.ColorSensorV3;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -39,6 +45,11 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   Thread m_visionThread;
 
+  private final I2C.Port i2cPort = I2C.Port.kOnboard;
+  private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
+  private final ColorMatch m_colorMatcher = new ColorMatch();
+
+  private edu.wpi.first.wpilibj.util.Color kNoteTarget = new edu.wpi.first.wpilibj.util.Color(53,37,9);
   /**
    * This function is run when the robot is first started up and should be used
    * for any
@@ -80,6 +91,9 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
     // autonomous chooser on the dashboard.
+
+    m_colorMatcher.addColorMatch(kNoteTarget);
+
     m_robotContainer = new RobotContainer();
     CameraServer.startAutomaticCapture(1);
     
@@ -190,6 +204,29 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    edu.wpi.first.wpilibj.util.Color detectedColor = m_colorSensor.getColor();
+
+    int IR = m_colorSensor.getIR();
+
+    int proximity = m_colorSensor.getProximity();
+
+    SmartDashboard.putNumber("Proximity", proximity);
+    String colorString;
+    ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedColor);
+
+    if (match.color == kNoteTarget) {
+      colorString = "Orange";
+    } else {
+      colorString = "Unknown";
+    }
+
+    SmartDashboard.putNumber("Red",detectedColor.red);
+    SmartDashboard.putNumber("Green", detectedColor.green);
+    SmartDashboard.putNumber("Blue", detectedColor.blue);
+    SmartDashboard.putNumber("IR", IR);
+    SmartDashboard.putString("Detected Color", colorString);
+
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

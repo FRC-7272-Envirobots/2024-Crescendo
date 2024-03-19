@@ -7,10 +7,12 @@ package frc.robot.subsystems;
 import static frc.robot.Constants.DrivetrainConstants.*;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -29,6 +31,8 @@ public class CANDrivetrain extends SubsystemBase {
   different method calls. */
   DifferentialDrive m_drivetrain;
   ADXRS450_Gyro gyro;
+
+
 
   private static final double kAngleSetPoint = 0.0;
   private static final double kP = 0.005;
