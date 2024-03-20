@@ -48,7 +48,7 @@ public class Robot extends TimedRobot {
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
   private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
   private final ColorMatch m_colorMatcher = new ColorMatch();
-
+  
   private edu.wpi.first.wpilibj.util.Color kNoteTarget = new edu.wpi.first.wpilibj.util.Color(53,37,9);
   /**
    * This function is run when the robot is first started up and should be used
@@ -93,6 +93,8 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
 
     m_colorMatcher.addColorMatch(kNoteTarget);
+
+    m_colorMatcher.setConfidenceThreshold(0.72);
 
     m_robotContainer = new RobotContainer();
     CameraServer.startAutomaticCapture(1);
@@ -213,9 +215,9 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putNumber("Proximity", proximity);
     String colorString;
-    ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedColor);
+    ColorMatchResult match = m_colorMatcher.matchColor(detectedColor);
 
-    if (match.color == kNoteTarget) {
+    if (match != null && match.color == kNoteTarget) {
       colorString = "Orange";
     } else {
       colorString = "Unknown";
