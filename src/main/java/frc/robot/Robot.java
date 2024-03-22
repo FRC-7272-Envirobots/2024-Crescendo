@@ -213,7 +213,7 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putNumber("Proximity", proximity);
     String colorString;
-    ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedColor);
+    ColorMatchResult match = m_colorMatcher.matchColor(detectedColor);
 
     if (match.color == kNoteTarget) {
       colorString = "Orange";
