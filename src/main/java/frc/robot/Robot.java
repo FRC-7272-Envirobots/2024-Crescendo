@@ -49,7 +49,7 @@ public class Robot extends TimedRobot {
   private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
   private final ColorMatch m_colorMatcher = new ColorMatch();
   
-  private edu.wpi.first.wpilibj.util.Color kNoteTarget = new edu.wpi.first.wpilibj.util.Color(53,37,9);
+  private edu.wpi.first.wpilibj.util.Color kNoteTarget = new edu.wpi.first.wpilibj.util.Color(0.53,0.37,0.09);
   /**
    * This function is run when the robot is first started up and should be used
    * for any
@@ -93,8 +93,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
 
     m_colorMatcher.addColorMatch(kNoteTarget);
-
-    m_colorMatcher.setConfidenceThreshold(0.72);
+    m_colorMatcher.setConfidenceThreshold(0.85);
 
     m_robotContainer = new RobotContainer();
     CameraServer.startAutomaticCapture(1);
@@ -213,21 +212,28 @@ public class Robot extends TimedRobot {
 
     int proximity = m_colorSensor.getProximity();
 
-    SmartDashboard.putNumber("Proximity", proximity);
     String colorString;
+    Double confidence;
+
     ColorMatchResult match = m_colorMatcher.matchColor(detectedColor);
 
     if (match != null && match.color == kNoteTarget) {
       colorString = "Orange";
+      confidence = match.confidence;
     } else {
       colorString = "Unknown";
+      confidence = 0.0;
     }
 
+    SmartDashboard.putNumber("Proximity", proximity);
     SmartDashboard.putNumber("Red",detectedColor.red);
     SmartDashboard.putNumber("Green", detectedColor.green);
     SmartDashboard.putNumber("Blue", detectedColor.blue);
     SmartDashboard.putNumber("IR", IR);
     SmartDashboard.putString("Detected Color", colorString);
+    SmartDashboard.putNumber("Confidence", confidence);
+
+
 
   }
 
